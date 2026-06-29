@@ -1,0 +1,49 @@
+# macOS / editor noise
+.DS_Store
+*.swp
+*.tmp
+
+# Local runtime/cache folders
+# Keep only source scripts and dependency manifests under .tools.
+.tools/**
+!.tools/
+!.tools/*.mjs
+!.tools/media-bin/
+!.tools/media-bin/package.json
+!.tools/media-bin/package-lock.json
+!.tools/thumbs/
+!.tools/thumbs/package.json
+!.tools/thumbs/package-lock.json
+
+# Video render outputs and generated frame caches
+06_预览输出/
+**/frames_*/
+**/*_frames/
+**/normalized_*/
+**/debug_*/
+
+# Large local source/material libraries kept outside Git in the lightweight repo.
+01_素材浏览/
+03-正版授权字体库/
+04-正版授权音乐库/
+CC 2.0宣发/
+手动保存素材/
+高帧率版手动保存素材/
+成片保存/
+
+# Large received/source bundles that should not enter normal Git by accident.
+# If any of these need versioning, use Git LFS intentionally.
+*.zip
+*.mg
+*.mp4
+*.mov
+*.m4v
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.aac
+*.aiff
+
+# Generated/temporary image variants from experiments
+更新内容_修正版/

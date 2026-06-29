@@ -1,0 +1,38 @@
+[0:v]split=2[bgintro][bgend];[1:v]split=2[logointro][logoend];
+[bgintro]trim=duration=5,setpts=PTS-STARTPTS,scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=brightness=-0.58:saturation=1.45[ibg];
+[logointro]trim=duration=5,setpts=PTS-STARTPTS,scale=470:-1[ilogo];
+[ibg][ilogo]overlay=(W-w)/2:(H-h)/2-40,drawbox=x=0:y=0:w=1280:h=720:color=0x0B0716@0.16:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Medium.ttf':text='2.0':fontcolor=0xC7AAFF:fontsize=30:x=(w-text_w)/2:y=430,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='重构设计的起点':fontcolor=0xF4F0FF:fontsize=24:x=(w-text_w)/2:y=475,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Medium.ttf':text='2026  /  PRODUCT RELEASE':fontcolor=0xBCA4FF:fontsize=14:x=(w-text_w)/2:y=650[intro];
+
+[2:v]trim=start=0:end=10,setpts=PTS-STARTPTS,fps=30,split=2[frontblur][frontpanel];
+[frontblur]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,boxblur=12:3,eq=brightness=-0.48:saturation=1.35[frontbg];
+[frontpanel]scale=1060:596:force_original_aspect_ratio=decrease,pad=1060:596:(ow-iw)/2:(oh-ih)/2:color=0x121025[frontui];
+[frontbg]drawbox=x=103:y=49:w=1074:h=610:color=0xC8B7FF@0.17:t=fill[frontstage];
+[frontstage][frontui]overlay=(W-w)/2:62,drawbox=x=54:y=530:w=570:h=120:color=0x090512@0.70:t=fill,drawbox=x=54:y=548:w=6:h=75:color=0xB99AFF@1:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Bold.ttf':text='全新前策分析':fontcolor=white:fontsize=39:x=80:y=545,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='让每一次设计，从判断开始':fontcolor=0xE4DAFF:fontsize=21:x=80:y=596,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Bold.ttf':text='01 / STRATEGY':fontcolor=0xB99AFF:fontsize=15:x=80:y=626[front];
+
+[3:v]trim=start=0:end=9,setpts=PTS-STARTPTS,fps=30,split=2[modelblur][modelpanel];
+[modelblur]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,boxblur=12:3,eq=brightness=-0.50:saturation=1.30[modelbg];
+[modelpanel]scale=1060:596:force_original_aspect_ratio=decrease,pad=1060:596:(ow-iw)/2:(oh-ih)/2:color=0x121025[modelui];
+[modelbg]drawbox=x=103:y=49:w=1074:h=610:color=0xC8B7FF@0.17:t=fill[modelstage];
+[modelstage][modelui]overlay=(W-w)/2:62,drawbox=x=54:y=530:w=625:h=120:color=0x090512@0.70:t=fill,drawbox=x=54:y=548:w=6:h=75:color=0xB99AFF@1:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Bold.ttf':text='空间推演，即时发生':fontcolor=white:fontsize=39:x=80:y=545,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='让策略判断，直接进入空间表达':fontcolor=0xE4DAFF:fontsize=21:x=80:y=596,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Bold.ttf':text='02 / MODEL':fontcolor=0xB99AFF:fontsize=15:x=80:y=626[model];
+
+[4:v]trim=start=0:end=8,setpts=PTS-STARTPTS,fps=30,split=2[createblur][createpanel];
+[createblur]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,boxblur=12:3,eq=brightness=-0.50:saturation=1.30[createbg];
+[createpanel]scale=1060:596:force_original_aspect_ratio=decrease,pad=1060:596:(ow-iw)/2:(oh-ih)/2:color=0x121025[createui];
+[createbg]drawbox=x=103:y=49:w=1074:h=610:color=0xC8B7FF@0.17:t=fill[createstage];
+[createstage][createui]overlay=(W-w)/2:62,drawbox=x=54:y=530:w=625:h=120:color=0x090512@0.70:t=fill,drawbox=x=54:y=548:w=6:h=75:color=0xB99AFF@1:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Bold.ttf':text='灵感表达，彼此连贯':fontcolor=white:fontsize=39:x=80:y=545,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='从参考，到方案，形成同一种语言':fontcolor=0xE4DAFF:fontsize=21:x=80:y=596,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Bold.ttf':text='03 / CREATE':fontcolor=0xB99AFF:fontsize=15:x=80:y=626[create];
+
+[5:v]trim=start=0:end=9,setpts=PTS-STARTPTS,fps=30,split=2[flowblur][flowpanel];
+[flowblur]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,boxblur=12:3,eq=brightness=-0.50:saturation=1.30[flowbg];
+[flowpanel]scale=1060:596:force_original_aspect_ratio=decrease,pad=1060:596:(ow-iw)/2:(oh-ih)/2:color=0x121025[flowui];
+[flowbg]drawbox=x=103:y=49:w=1074:h=610:color=0xC8B7FF@0.17:t=fill[flowstage];
+[flowstage][flowui]overlay=(W-w)/2:62,drawbox=x=54:y=530:w=650:h=120:color=0x090512@0.70:t=fill,drawbox=x=54:y=548:w=6:h=75:color=0xB99AFF@1:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Bold.ttf':text='每一步，都流向下一步':fontcolor=white:fontsize=39:x=80:y=545,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='更少切换，更完整的设计工作流':fontcolor=0xE4DAFF:fontsize=21:x=80:y=596,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Bold.ttf':text='04 / CONNECTED':fontcolor=0xB99AFF:fontsize=15:x=80:y=626[flow];
+
+[bgend]trim=start=0:end=5,setpts=PTS-STARTPTS,scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=brightness=-0.63:saturation=1.45[ebg];
+[logoend]trim=start=0:end=5,setpts=PTS-STARTPTS,scale=440:-1[elogo];
+[ebg][elogo]overlay=(W-w)/2:(H-h)/2-50,drawbox=x=0:y=0:w=1280:h=720:color=0x0B0716@0.12:t=fill,drawtext=fontfile='03-正版授权字体库/免费商用字体/Roboto/Roboto-Medium.ttf':text='2.0':fontcolor=0xC7AAFF:fontsize=28:x=(w-text_w)/2:y=421,drawtext=fontfile='03-正版授权字体库/免费商用字体/MiSans/MiSans-Regular.ttf':text='让设计，回到更完整的路径':fontcolor=0xF4F0FF:fontsize=23:x=(w-text_w)/2:y=470[end];
+
+[intro][front]xfade=transition=fadeblack:duration=0.5:offset=4.5[a];
+[a][model]xfade=transition=fadeblack:duration=0.5:offset=14.0[b];
+[b][create]xfade=transition=fadeblack:duration=0.5:offset=22.5[c];
+[c][flow]xfade=transition=fadeblack:duration=0.5:offset=30.0[d];
+[d][end]xfade=transition=fadeblack:duration=0.5:offset=38.5[v]
