@@ -17,6 +17,7 @@ const frameDir = path.join(outDir, 'frames_update_content_v34');
 const highlightFrameDir = path.join(outDir, 'frames_highlight_v34');
 const updateDir = path.join(cwd, '更新内容');
 const highlightDir = path.join(cwd, '亮点');
+const openingClip = path.join(cwd, '开头', 'Concetto_2.0_开头登场视觉_v04_2点0震荡波_9s.mp4');
 const output = path.join(cwd, '06_预览输出', 'Concetto_2.0_AI超分操作演示_v34_更新内容素材替换_低清.mp4');
 const preview = path.join(cwd, '06_预览输出', 'Concetto_2.0_AI超分操作演示_v34_更新内容素材替换_全片预览.jpg');
 const introPreview = path.join(cwd, '06_预览输出', 'Concetto_2.0_AI超分操作演示_v34_前置段预览.jpg');
@@ -473,15 +474,19 @@ async function renderHighlightClip() {
 }
 
 async function main() {
-  for (const p of [ffmpeg, ffprobe, music, srcList]) assertFile(p);
+  for (const p of [ffmpeg, ffprobe, music, srcList, openingClip]) assertFile(p);
   const highlightClip = await renderHighlightClip();
   const updateClip = await renderUpdateClip();
   const baseParts = readConcatList(srcList);
   const parts = [];
+  let replacedOpening = false;
   let replacedHighlight = false;
   let replacedUpdate = false;
   for (const p of baseParts) {
-    if (path.basename(p) === 'intro_highlight_01_v16.mp4') {
+    if (path.basename(p) === 'intro_opening_folder_direct_v16.mp4') {
+      parts.push(openingClip);
+      replacedOpening = true;
+    } else if (path.basename(p) === 'intro_highlight_01_v16.mp4') {
       parts.push(highlightClip);
       replacedHighlight = true;
     } else if (path.basename(p) === 'intro_update_contents_v24.mp4') {
@@ -491,6 +496,7 @@ async function main() {
       parts.push(p);
     }
   }
+  if (!replacedOpening) throw new Error('未找到 intro_opening_folder_direct_v16.mp4，无法替换开头段');
   if (!replacedHighlight) throw new Error('未找到 intro_highlight_01_v16.mp4，无法替换升级亮点段');
   if (!replacedUpdate) throw new Error('未找到 intro_update_contents_v24.mp4，无法替换更新内容段');
 
@@ -540,9 +546,11 @@ async function main() {
     '# Concetto 2.0 v34 更新内容素材替换',
     '',
     '- 基于 v30 前置段逻辑继续制作；',
+    '- 开头段替换为 `开头/Concetto_2.0_开头登场视觉_v04_2点0震荡波_9s.mp4`：删除原中文/英文副标题，并强化 2.0 字形震荡波；',
     '- 更新内容段改用 `更新内容/更新内容1.png` 重新渲染，保留原有六大模块描边、呼吸扫光和卡片光效；',
     '- 升级亮点、九大环节、操作演示和后续内容不改动。',
     '',
+    `开头新片段：\`${openingClip}\``,
     `升级亮点片段：\`${highlightClip}\``,
     `更新内容新片段：\`${updateClip}\``,
     `输出视频：\`${output}\``,
