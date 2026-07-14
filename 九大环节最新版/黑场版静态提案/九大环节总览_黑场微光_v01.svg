@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2048" height="1152" viewBox="0 0 2048 1152" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="nodeGrad" cx="42%" cy="28%" r="78%">
+      <stop offset="0%" stop-color="#a98bff"/>
+      <stop offset="54%" stop-color="#7459ff"/>
+      <stop offset="100%" stop-color="#4e48e7"/>
+    </radialGradient>
+    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6e5cff" stop-opacity=".8"/>
+      <stop offset="60%" stop-color="#6e5cff" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#6e5cff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow" x="-80%" y="-80%" width="260%" height="260%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#5746d6" flood-opacity=".34"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="13" flood-color="#8b7bff" flood-opacity=".45"/>
+    </filter>
+  
+    <style>
+      text { font-family: 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif !important; }
+    </style>
+    <radialGradient id="darkCore" cx="50%" cy="48%" r="72%">
+      <stop offset="0%" stop-color="#251c58" stop-opacity=".42"/>
+      <stop offset="42%" stop-color="#0b091b" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#020207" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="curveDarkGrad" gradientUnits="userSpaceOnUse" x1="190" y1="360" x2="1830" y2="390">
+      <stop offset="0%" stop-color="#7061e8" stop-opacity=".40"/>
+      <stop offset="36%" stop-color="#a18cff" stop-opacity=".70"/>
+      <stop offset="68%" stop-color="#7567ff" stop-opacity=".58"/>
+      <stop offset="100%" stop-color="#c7bdff" stop-opacity=".42"/>
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5e50d8" stop-opacity="0"/>
+      <stop offset="34%" stop-color="#8b7cff" stop-opacity=".46"/>
+      <stop offset="68%" stop-color="#b09aff" stop-opacity=".31"/>
+      <stop offset="100%" stop-color="#6e5cff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bannerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#17132f" stop-opacity=".92"/>
+      <stop offset="52%" stop-color="#100d24" stop-opacity=".86"/>
+      <stop offset="100%" stop-color="#1d1740" stop-opacity=".92"/>
+    </linearGradient>
+    <filter id="darkCurveGlow" x="-20%" y="-100%" width="140%" height="300%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <filter id="darkTextGlow" x="-40%" y="-80%" width="180%" height="260%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#9b88ff" flood-opacity=".30"/>
+    </filter>
+    <filter id="buildingGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#7563ff" flood-opacity=".42"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="2048" height="1152" fill="#020207"/>
+  <rect x="0" y="0" width="2048" height="1152" fill="url(#darkCore)"/>
+  <ellipse cx="1024" cy="500" rx="760" ry="430" fill="#5741d7" opacity=".035" filter="url(#darkCurveGlow)"/>
+
+  <g opacity=".38">
+    <path d="M-70 1065 C270 900 570 1108 905 982 C1232 858 1536 1056 2120 846" fill="none" stroke="url(#waveGrad)" stroke-width="2.4"/>
+    <path d="M-70 1092 C285 924 575 1132 930 1005 C1265 884 1584 1087 2120 886" fill="none" stroke="url(#waveGrad)" stroke-width="1.35" opacity=".72"/>
+    <path d="M-80 1116 C280 968 625 1148 982 1032 C1328 918 1642 1105 2112 933" fill="none" stroke="url(#waveGrad)" stroke-width="1" opacity=".42"/>
+  </g>
+
+  <g transform="translate(1024 768)" opacity=".17" filter="url(#buildingGlow)">
+    <ellipse cx="0" cy="44" rx="132" ry="42" fill="none" stroke="#8a78ff" stroke-width="2"/>
+    <ellipse cx="0" cy="44" rx="94" ry="28" fill="none" stroke="#c1b6ff" stroke-width="1.2" opacity=".55"/>
+    <path d="M-92 44V-10L-54-32V44M-49 44V-92L-5-118V44M2 44V-162L46-136V44M53 44V-70L88-49V44" fill="#7565ff" fill-opacity=".10" stroke="#b6a9ff" stroke-width="1.3"/>
+    <path d="M-92-10-54 12M-49-92-5-66M2-162 46-136M53-70 88-49" stroke="#e3dcff" stroke-width="1" opacity=".42"/>
+    <path d="M-75 34V1M-64 28V-5M-33 34V-72M-19 34V-81M18 34V-130M32 34V-121M67 34V-52M78 34V-43" stroke="#9a89ff" stroke-width="1" opacity=".65"/>
+  </g>
+
+  <text x="1024" y="155" text-anchor="middle" font-size="54" font-weight="800" fill="#f6f4ff" letter-spacing="1.5" filter="url(#darkTextGlow)">AI 重塑建筑方案设计师的完整旅程</text>
+  <text x="1024" y="205" text-anchor="middle" font-size="20" font-weight="500" fill="#aaa4c8" letter-spacing="2">九大环节串联，从任务书解读到汇报材料合成，一条工作流走完方案全过程</text>
+  <path d="M1470 106 l7 15 16 7-16 7-7 16-7-16-16-7 16-7z" fill="#aa97ff" opacity=".88" filter="url(#darkTextGlow)"/>
+  <path d="M1511 83 l4 9 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#d7ceff" opacity=".66"/>
+
+  <path d="M208 352 C300 352 306 670 398 670 C492 670 522 385 616 385 C708 385 695 670 787 670 C882 670 905 385 1000 385 C1094 385 1125 670 1219 670 C1312 670 1317 385 1410 385 C1500 385 1498 670 1588 670 C1681 670 1707 385 1800 385" fill="none" stroke="#6f5aff" stroke-width="10" stroke-linecap="round" opacity=".10" filter="url(#darkCurveGlow)"/>
+  <path d="M208 352 C300 352 306 670 398 670 C492 670 522 385 616 385 C708 385 695 670 787 670 C882 670 905 385 1000 385 C1094 385 1125 670 1219 670 C1312 670 1317 385 1410 385 C1500 385 1498 670 1588 670 C1681 670 1707 385 1800 385" fill="none" stroke="url(#curveDarkGrad)" stroke-width="2.2" stroke-linecap="round" opacity=".84"/>
+  <path d="M208 352 C300 352 306 670 398 670 C492 670 522 385 616 385 C708 385 695 670 787 670 C882 670 905 385 1000 385 C1094 385 1125 670 1219 670 C1312 670 1317 385 1410 385 C1500 385 1498 670 1588 670 C1681 670 1707 385 1800 385" fill="none" stroke="#d6ceff" stroke-width=".85" stroke-dasharray="4 14" stroke-linecap="round" opacity=".32"/>
+
+  <g>
+    <rect x="374" y="928" width="1300" height="112" rx="34" fill="url(#bannerGrad)" stroke="#8171e8" stroke-opacity=".38"/>
+    <circle cx="445" cy="984" r="34" fill="url(#nodeGrad)" opacity=".86" filter="url(#softShadow)"/>
+    <path d="M442 958l-15 29h14l-5 24 25-36h-14l9-17z" fill="#fff"/>
+    <text x="502" y="977" font-size="24" font-weight="800" fill="#f7f5ff">完整闭环方案设计工作流</text>
+    <text x="502" y="1008" font-size="14" font-weight="500" fill="#9993b6">通过数据反馈不断优化专注策略，形成正向循环，持续提升个人效能</text>
+    <rect x="1260" y="958" width="350" height="54" rx="18" fill="#7562f5" opacity=".82" filter="url(#darkTextGlow)"/>
+    <text x="1430" y="992" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">开始体验 全新 CONCETTO 2.0  →</text>
+  </g>
+  
+    <g>
+      <rect x="118" y="354" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="131" y="367" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="140" y="380" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="208" y="422" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">01</text>
+      <text x="208" y="452" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">前策分析</text>
+      <text x="208" y="481" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">多维分析</text>
+<text x="208" y="503" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">整合数据与策略</text>
+<text x="208" y="525" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">辅助高效决策</text>
+      <circle cx="208" cy="352" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="208" cy="352" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="208" cy="352" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="194" cy="334" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(208 352) scale(.86)">
+        
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M-25-28h31l17 17v39a7 7 0 0 1-7 7h-41a7 7 0 0 1-7-7v-49a7 7 0 0 1 7-7z"/>
+      <path fill="#8068ff" d="M5-28v17h17z"/>
+      <path fill="#8068ff" d="M-18-4h24v7h-24zm0 14h35v7h-35z"/>
+      <path fill="#fff" d="M23-38l7 15 16 6-16 7-7 16-7-16-16-7 16-6z"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="308" y="670" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="321" y="683" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="330" y="696" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="398" y="738" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">02</text>
+      <text x="398" y="768" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">场地定位</text>
+      <text x="398" y="797" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">多维解析区位</text>
+<text x="398" y="819" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">周边资源条件</text>
+<text x="398" y="841" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">快速建立认知</text>
+      <circle cx="398" cy="670" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="398" cy="670" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="398" cy="670" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="384" cy="652" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(398 670) scale(.86)">
+        
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M0-35c-18 0-32 14-32 32 0 24 32 52 32 52S32 21 32-3c0-18-14-32-32-32zm0 45a14 14 0 1 1 0-28 14 14 0 0 1 0 28z"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="526" y="387" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="539" y="400" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="548" y="413" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="616" y="455" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">03</text>
+      <text x="616" y="485" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">图生模型</text>
+      <text x="616" y="514" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">支持总平生成</text>
+<text x="616" y="536" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">三维模型</text>
+<text x="616" y="558" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">加速方案迭代</text>
+      <circle cx="616" cy="385" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="616" cy="385" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="616" cy="385" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="602" cy="367" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(616 385) scale(.86)">
+        
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M0-38 35-18 0 2-35-18z"/>
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M-35-10 0 10v40l-35-20z" opacity=".92"/>
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M35-10 0 10v40l35-20z" opacity=".82"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="697" y="670" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="710" y="683" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="719" y="696" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="787" y="738" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">04</text>
+      <text x="787" y="768" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">数智建模</text>
+      <text x="787" y="797" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">参数化驱动</text>
+<text x="787" y="819" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">高效生成</text>
+<text x="787" y="841" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">提升建模精度</text>
+      <circle cx="787" cy="670" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="787" cy="670" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="787" cy="670" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="773" cy="652" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(787 670) scale(.86)">
+        
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M0-38 12-14H-12zM0 38l-12-24h24z"/>
+      <path fill="#fff" stroke="#fff" stroke-width="0" d="M-36 26h28L6-5l-12-6zm72 0H8L-6-5l12-6z" opacity=".92"/>
+      <circle cx="0" cy="-4" r="7" fill="#fff"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="910" y="387" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="923" y="400" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="932" y="413" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="1000" y="455" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">05</text>
+      <text x="1000" y="485" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="23" font-weight="800" fill="#f6f3ff">AI灵感渲染</text>
+      <text x="1000" y="514" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">快速生成</text>
+<text x="1000" y="536" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">多维度结果</text>
+<text x="1000" y="558" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">彩总/效果图/视频</text>
+      <circle cx="1000" cy="385" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="1000" cy="385" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="1000" cy="385" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="986" cy="367" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(1000 385) scale(.86)">
+        
+      <rect x="-33" y="-30" width="56" height="46" rx="8" fill="#fff"/>
+      <circle cx="-14" cy="-12" r="6" fill="#8068ff"/>
+      <path fill="#8068ff" d="m-29 11 17-18 13 13 9-10 18 15z"/>
+      <path fill="#fff" d="M28-40l6 13 14 5-14 6-6 14-6-14-14-6 14-5z"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="1129" y="670" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="1142" y="683" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="1151" y="696" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="1219" y="738" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">06</text>
+      <text x="1219" y="768" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">车库智能排布</text>
+      <text x="1219" y="797" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">自动生成</text>
+<text x="1219" y="819" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">高效合规车位</text>
+<text x="1219" y="841" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">指标实时刷新</text>
+      <circle cx="1219" cy="670" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="1219" cy="670" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="1219" cy="670" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="1205" cy="652" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(1219 670) scale(.86)">
+        
+      <rect x="-35" y="-33" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="-6" y="-33" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="23" y="-33" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="-35" y="-4" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="-6" y="-4" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="23" y="-4" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="-35" y="25" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="-6" y="25" width="22" height="22" rx="3" fill="#fff"/>
+      <rect x="23" y="25" width="22" height="22" rx="3" fill="#fff"/>
+      <path fill="#8068ff" d="M-28-25h8v8h-8zm29 29h8v8H1zm29 29h8v8h-8z"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="1320" y="387" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="1333" y="400" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="1342" y="413" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="1410" y="455" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">07</text>
+      <text x="1410" y="485" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="23" font-weight="800" fill="#f6f3ff">AI仿真分析</text>
+      <text x="1410" y="514" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">集成多项</text>
+<text x="1410" y="536" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">仿真分析能力</text>
+<text x="1410" y="558" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">快速反馈优化</text>
+      <circle cx="1410" cy="385" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="1410" cy="385" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="1410" cy="385" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="1396" cy="367" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(1410 385) scale(.86)">
+        
+      <circle cx="0" cy="0" r="28" fill="none" stroke="#fff" stroke-width="8"/>
+      <path fill="#8068ff" d="M-4-36h8v18h-8zm0 54h8v18h-8zM-36-4h18v8h-18zm54 0h18v8H18z"/>
+      <circle cx="0" cy="0" r="10" fill="#fff"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="1498" y="670" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="1511" y="683" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="1520" y="696" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="1588" y="738" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">08</text>
+      <text x="1588" y="768" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="23" font-weight="800" fill="#f6f3ff">AI成本估算</text>
+      <text x="1588" y="797" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">海量真实项目</text>
+<text x="1588" y="819" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">数据训练模型</text>
+<text x="1588" y="841" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">估算误差可控</text>
+      <circle cx="1588" cy="670" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="1588" cy="670" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="1588" cy="670" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="1574" cy="652" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(1588 670) scale(.86)">
+        
+      <rect x="-28" y="-36" width="56" height="72" rx="8" fill="#fff"/>
+      <rect x="-18" y="-24" width="36" height="14" rx="3" fill="#8068ff"/>
+      <circle cx="-15" cy="3" r="5" fill="#8068ff"/>
+      <circle cx="0" cy="3" r="5" fill="#8068ff"/>
+      <circle cx="15" cy="3" r="5" fill="#8068ff"/>
+      <circle cx="-15" cy="20" r="5" fill="#8068ff"/>
+      <circle cx="0" cy="20" r="5" fill="#8068ff"/>
+      <circle cx="15" cy="20" r="5" fill="#8068ff"/>
+      </g>
+    </g>
+
+    <g>
+      <rect x="1710" y="387" width="180" height="226" rx="34" fill="#17142e" opacity=".66"/>
+      <rect x="1723" y="400" width="154" height="196" rx="30" fill="#100e23" opacity=".82"/>
+      <rect x="1732" y="413" width="136" height="174" rx="24" fill="#080714" opacity=".92" stroke="#8f80ff" stroke-opacity=".54" stroke-width="1.4"/>
+      <text x="1800" y="455" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="22" font-weight="800" fill="#b9adff">09</text>
+      <text x="1800" y="485" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="24" font-weight="800" fill="#f6f3ff">文本生成</text>
+      <text x="1800" y="514" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">整合渲染估算</text>
+<text x="1800" y="536" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">分析等成果图</text>
+<text x="1800" y="558" text-anchor="middle" font-family="MiSans, PingFang SC, Arial, sans-serif" font-size="13.4" font-weight="500" fill="#aaa5c7">汇报PPT生成</text>
+      <circle cx="1800" cy="385" r="65" fill="#8b78ff" opacity=".10"/>
+      <circle cx="1800" cy="385" r="57" fill="url(#nodeGlow)" opacity=".56"/>
+      <circle cx="1800" cy="385" r="47" fill="url(#nodeGrad)" filter="url(#softShadow)"/>
+      <circle cx="1786" cy="367" r="19" fill="#fff" opacity=".12"/>
+      <g transform="translate(1800 385) scale(.86)">
+        
+    <path fill="#fff" stroke="#fff" stroke-width="0" d="M-24-35h34l20 20v43a8 8 0 0 1-8 8h-46a8 8 0 0 1-8-8v-55a8 8 0 0 1 8-8z"/>
+    <path fill="#8068ff" d="M9-35v20h20z"/>
+    <path fill="#8068ff" d="M-16-5h28v7h-28zm0 15h33v7h-33zm0 15h24v7h-24z"/>
+      </g>
+    </g>
+</svg>
