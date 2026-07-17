@@ -7,18 +7,21 @@ const cwd = process.cwd();
 const ffmpeg = path.join(cwd, '.tools/media-bin/node_modules/@ffmpeg-installer/darwin-arm64/ffmpeg');
 const sourcePng = path.join(cwd, '九大环节最新版', '黑场版静态提案', '九大环节总览_黑场微光_v01.png');
 const sourceSvg = path.join(cwd, '九大环节最新版', '黑场版静态提案', '九大环节总览_黑场微光_v01.svg');
+const previewMode = process.env.RENDER_MODE !== 'final';
 const outDir = path.join(cwd, '06_预览输出', 'workflow_overview_dark_fx_v01');
 const frameDir = path.join(outDir, 'frames');
-const output = path.join(cwd, '06_预览输出', 'Concetto_2.0_九大环节黑场浮现流光_按钮波纹_v02_低清预览.mp4');
+const output = path.join(cwd, '06_预览输出', previewMode
+  ? 'Concetto_2.0_九大环节黑场浮现流光_按钮波纹_v02_低清预览.mp4'
+  : 'Concetto_2.0_九大环节黑场浮现流光_按钮波纹_v02_2560p60.mp4');
 
 // Version 02 adds the final CTA pointer press and local concentric ripple response.
 // Preview is intentionally light. The SVG remains authored in the 2048 × 1152
 // design coordinate system, so the same motion can later render at 2560p/60fps.
 const VIEW_W = 2048;
 const VIEW_H = 1152;
-const OUT_W = 1280;
-const OUT_H = 720;
-const FPS = 30;
+const OUT_W = previewMode ? 1280 : 2560;
+const OUT_H = previewMode ? 720 : 1440;
+const FPS = previewMode ? 30 : 60;
 const DUR = 9.2;
 
 fs.mkdirSync(outDir, { recursive: true });
@@ -290,9 +293,9 @@ async function main() {
   run(ffmpeg, [
     '-y', '-framerate', String(FPS), '-i', path.join(frameDir, 'frame_%04d.png'),
     '-vf', `scale=${OUT_W}:${OUT_H}:flags=lanczos`,
-    '-an', '-c:v', 'libx264', '-preset', 'fast', '-crf', '20', '-pix_fmt', 'yuv420p',
+    '-an', '-c:v', 'libx264', '-preset', previewMode ? 'fast' : 'medium', '-crf', previewMode ? '20' : '14', '-pix_fmt', 'yuv420p',
     '-r', String(FPS), '-movflags', '+faststart', output,
-  ], 'encode preview');
+  ], previewMode ? 'encode workflow preview' : 'encode workflow 2560p60');
   console.log(`DONE ${output}`);
 }
 
