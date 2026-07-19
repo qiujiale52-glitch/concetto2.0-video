@@ -7,6 +7,7 @@ const cwd = process.cwd();
 const ffmpeg = path.join(cwd, '.tools/media-bin/node_modules/@ffmpeg-installer/darwin-arm64/ffmpeg');
 const ffprobe = path.join(cwd, '.tools/media-bin/node_modules/@ffprobe-installer/darwin-arm64/ffprobe');
 const previewMode = process.env.RENDER_MODE === 'preview';
+const progressMode = process.env.PROGRESS_MODE || 'embedded';
 const selectedChapter = process.env.CHAPTER || '';
 const selectedChapters = process.env.CHAPTERS || selectedChapter;
 const outDir = path.join(cwd, '06_预览输出', 'chapter_covers_clean_v01_parts');
@@ -22,10 +23,13 @@ const DW = 1920;
 const DH = 1080;
 const fps = previewMode ? 30 : 60;
 const chapterDur = 3.6;
+const FRAME_CONCURRENCY = Math.max(1, Number.parseInt(process.env.FRAME_CONCURRENCY || '2', 10) || 2);
+const RESUME_FRAMES = process.env.RESUME_FRAMES === '1';
 
 const music = path.join(cwd, '04-正版授权音乐库', '未来科技宽广磅礴音乐15437.wav');
 const selectionTag = selectedChapters ? selectedChapters.replace(/[^0-9,-]/g, '').replace(/,/g, '-') : '01-09';
-const output = path.join(cwd, '06_预览输出', previewMode ? `Concetto_2.0_章节顶部九环引线推进_${selectionTag}_v04_低清预览.mp4` : `Concetto_2.0_章节顶部九环引线推进_${selectionTag}_v04_2560p60.mp4`);
+const progressSuffix = progressMode === 'none' ? '_无内嵌进度层' : '';
+const output = path.join(cwd, '06_预览输出', previewMode ? `Concetto_2.0_章节顶部九环引线推进_${selectionTag}_v04${progressSuffix}_低清预览.mp4` : `Concetto_2.0_章节顶部九环引线推进_${selectionTag}_v04${progressSuffix}_2560p60.mp4`);
 
 const local = (p) => path.join(cwd, 'CC 2.0宣发/Resources/local', p);
 const manual = (...p) => path.join(cwd, '手动保存素材', ...p);
@@ -89,7 +93,7 @@ const sections = [
   },
   {
     no: '06',
-    title: '总图排布',
+    title: '车库智能排布',
     sub: '自动生成高效合规车位',
     desc: '支持修改与指标实时刷新，让专项排布快速进入可优化状态',
     card: local('233bf84d9a4a141ad1bf43fcc299bcdc.png'),
@@ -396,7 +400,7 @@ function renderSvg(section, sideFiles, t) {
 
     <text x="112" y="136" font-family="Avenir Next, Arial" font-size="17" letter-spacing="7" fill="#857be8" opacity="${(0.72 * a).toFixed(3)}">CONCETTO 2.0</text>
     <rect x="112" y="158" width="${(185 * a).toFixed(1)}" height="1.2" fill="#7668ff" opacity="0.55"/>
-    ${progressOverlay(section, t, outA)}
+    ${progressMode === 'none' ? '' : progressOverlay(section, t, outA)}
 
     <g opacity="${(0.45 * sideA).toFixed(3)}" filter="url(#panelGlow)" transform="translate(${(128 - 28 * drift).toFixed(1)} ${(280 - 12 * drift).toFixed(1)}) rotate(-8)">
       <rect x="-12" y="-12" width="454" height="284" rx="12" fill="#070611" stroke="#9a8cff" stroke-opacity="0.18"/>
@@ -429,15 +433,23 @@ function renderSvg(section, sideFiles, t) {
 async function renderChapter(section, idx) {
   const sideFiles = extractSideFrames(section, idx);
   const dir = path.join(frameRoot, section.no);
-  fs.rmSync(dir, { recursive: true, force: true });
+  if (!RESUME_FRAMES) fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
   const count = Math.round(chapterDur * fps);
-  for (let i = 0; i < count; i++) {
-    const out = path.join(dir, `frame_${String(i).padStart(4, '0')}.png`);
-    const t = i / fps;
-    await sharp(Buffer.from(renderSvg(section, sideFiles, t))).png().toFile(out);
+  let nextFrame = 0;
+  async function renderWorker() {
+    while (true) {
+      const i = nextFrame++;
+      if (i >= count) return;
+      const out = path.join(dir, `frame_${String(i).padStart(4, '0')}.png`);
+      if (!(RESUME_FRAMES && fs.existsSync(out))) {
+        const t = i / fps;
+        await sharp(Buffer.from(renderSvg(section, sideFiles, t))).png().toFile(out);
+      }
+    }
   }
-  const part = path.join(outDir, `chapter_${section.no}_clean_v01_${previewMode ? 'preview' : '2560p60'}.mp4`);
+  await Promise.all(Array.from({ length: FRAME_CONCURRENCY }, () => renderWorker()));
+  const part = path.join(outDir, `chapter_${section.no}_clean_v01${progressSuffix}_${previewMode ? 'preview' : '2560p60'}.mp4`);
   run([
     '-y',
     '-framerate', String(fps),
@@ -470,9 +482,9 @@ async function main() {
   for (let i = 0; i < chosen.length; i++) {
     chapterParts.push(await renderChapter(chosen[i], i));
   }
-  const listPath = path.join(outDir, 'concat_list.txt');
+  const listPath = path.join(outDir, `concat_list${progressSuffix}.txt`);
   fs.writeFileSync(listPath, chapterParts.map((p) => `file '${p.replace(/'/g, "'\\''")}'`).join('\n') + '\n');
-  const videoOnly = path.join(outDir, 'video_concat.mp4');
+  const videoOnly = path.join(outDir, `video_concat${progressSuffix}.mp4`);
   run(['-y', '-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', videoOnly], 'concat final parts');
 
   const dur = probeDur(videoOnly);

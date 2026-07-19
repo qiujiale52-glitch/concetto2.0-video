@@ -23,9 +23,11 @@ const OUT_W = previewMode ? 1280 : 2560;
 const OUT_H = previewMode ? 720 : 1440;
 const FPS = previewMode ? 30 : 60;
 const DUR = 9.2;
+const FRAME_CONCURRENCY = Math.max(1, Number.parseInt(process.env.FRAME_CONCURRENCY || '2', 10) || 2);
+const RESUME_FRAMES = process.env.RESUME_FRAMES === '1';
 
 fs.mkdirSync(outDir, { recursive: true });
-fs.rmSync(frameDir, { recursive: true, force: true });
+if (!RESUME_FRAMES) fs.rmSync(frameDir, { recursive: true, force: true });
 fs.mkdirSync(frameDir, { recursive: true });
 
 for (const p of [ffmpeg, sourcePng, sourceSvg]) {
@@ -284,12 +286,22 @@ function run(bin, args, label) {
 
 async function main() {
   const frames = Math.round(DUR * FPS);
-  for (let i = 0; i < frames; i++) {
-    const svg = renderSvg(i / FPS);
-    const file = path.join(frameDir, `frame_${String(i).padStart(4, '0')}.png`);
-    await sharp(Buffer.from(svg), { density: 96 }).png({ compressionLevel: 3 }).toFile(file);
-    if ((i + 1) % 60 === 0 || i + 1 === frames) console.log(`frames ${i + 1}/${frames}`);
+  let nextFrame = 0;
+  let completed = 0;
+  async function renderWorker() {
+    while (true) {
+      const i = nextFrame++;
+      if (i >= frames) return;
+      const file = path.join(frameDir, `frame_${String(i).padStart(4, '0')}.png`);
+      if (!(RESUME_FRAMES && fs.existsSync(file))) {
+        const svg = renderSvg(i / FPS);
+        await sharp(Buffer.from(svg), { density: 96 }).png({ compressionLevel: 3 }).toFile(file);
+      }
+      completed += 1;
+      if (completed % 60 === 0 || completed === frames) console.log(`frames ${completed}/${frames}`);
+    }
   }
+  await Promise.all(Array.from({ length: FRAME_CONCURRENCY }, () => renderWorker()));
   run(ffmpeg, [
     '-y', '-framerate', String(FPS), '-i', path.join(frameDir, 'frame_%04d.png'),
     '-vf', `scale=${OUT_W}:${OUT_H}:flags=lanczos`,

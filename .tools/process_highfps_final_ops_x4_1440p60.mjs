@@ -96,7 +96,7 @@ const ops = [
   {
     key: '06_site_layout',
     no: '06',
-    title: '总图排布',
+    title: '车库智能排布',
     feature: '自动生成高效合规车位，指标实时刷新',
     rel: '车库智能排布/车库智能排布-1.mov',
     crop: normalCrop,
@@ -193,6 +193,8 @@ function easeInOutCubic(t) {
 function bgSvg(op) {
   const s = W / 1920;
   const S = (v) => Math.round(v * s);
+  const titleUnits = Array.from(op.title).reduce((sum, char) => sum + (/^[\x00-\x7F]$/.test(char) ? 0.62 : 1), 0);
+  const featureX = Math.min(760, Math.max(630, 438 + titleUnits * 37 + 34));
   return `<?xml version="1.0" encoding="UTF-8"?>
   <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -213,19 +215,20 @@ function bgSvg(op) {
     <rect x="${S(70)}" y="${S(130)}" width="${S(1780)}" height="${S(910)}" rx="${S(34)}" fill="#05050d" opacity="0.50" filter="url(#glow)"/>
     <rect x="${S(62)}" y="${S(122)}" width="${S(1796)}" height="${S(926)}" rx="${S(38)}" fill="none" stroke="#7d6dff" stroke-opacity="0.34" stroke-width="${(1.3 * s).toFixed(2)}" filter="url(#glow)"/>
     <rect x="${S(76)}" y="${S(136)}" width="${S(1768)}" height="${S(898)}" rx="${S(30)}" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="${(1 * s).toFixed(2)}"/>
-    <text x="${S(112)}" y="${S(82)}" font-family="Avenir Next, Arial" font-size="${S(15)}" letter-spacing="${S(6)}" fill="#857be8" opacity="0.78">CONCETTO 2.0 / WORKFLOW DEMO</text>
+    <text x="${S(112)}" y="${S(82)}" font-family="Avenir Next, Arial" font-size="${S(15)}" letter-spacing="${S(6)}" fill="#857be8" opacity="0.78">CONCETTO 2.0</text>
     <rect x="${S(112)}" y="${S(104)}" width="${S(245)}" height="${(1.2 * s).toFixed(2)}" fill="#7668ff" opacity="0.55"/>
-    <text x="${S(1748)}" y="${S(82)}" text-anchor="end" font-family="Avenir Next, Arial" font-size="${S(18)}" letter-spacing="${S(4)}" fill="#8f84dc" opacity="0.78">${op.no} / ${esc(op.title)}</text>
-    <text x="${S(610)}" y="${S(84)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(24)}" fill="#8f84dc" opacity="0.82">${op.no}</text>
-    <text x="${S(665)}" y="${S(86)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(36)}" font-weight="700" fill="#f3f0ff">${esc(op.title)}</text>
-    <text x="${S(930)}" y="${S(84)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(20)}" fill="#aaa2df" opacity="0.92">${esc(op.feature)}</text>
+    <text x="${S(390)}" y="${S(84)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(24)}" fill="#8f84dc" opacity="0.82">${op.no}</text>
+    <text x="${S(438)}" y="${S(86)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(36)}" font-weight="700" fill="#f3f0ff">${esc(op.title)}</text>
+    <text x="${S(featureX)}" y="${S(84)}" font-family="MiSans, PingFang SC, Arial" font-size="${S(19)}" fill="#aaa2df" opacity="0.92">${esc(op.feature)}</text>
   </svg>`;
 }
 
 async function renderBg(op) {
   ensureDir(bgDir);
   const out = path.join(bgDir, `${op.key}_bg_1440p.png`);
-  if (!fs.existsSync(out)) await sharp(Buffer.from(bgSvg(op))).png().toFile(out);
+  // Background/header is code-native and intentionally regenerated every run;
+  // this prevents an older baked header from surviving after layout changes.
+  await sharp(Buffer.from(bgSvg(op))).png().toFile(out);
   return out;
 }
 

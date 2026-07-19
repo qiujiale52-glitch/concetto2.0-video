@@ -16,6 +16,8 @@ const FPS = previewMode ? 30 : 60;
 const visualOutput = path.join(outDir, previewMode ? 'highlight_independent_breath_v05_preview_video_only.mp4' : 'highlight_independent_breath_v05_2560p60_video_only.mp4');
 const output = path.join(cwd, '06_预览输出', previewMode ? 'Concetto_2.0_升级亮点_分层独立呼吸_v05_低清预览.mp4' : 'Concetto_2.0_升级亮点_分层独立呼吸_v05_2560p60.mp4');
 const DUR = 9.4;
+const FRAME_CONCURRENCY = Math.max(1, Number.parseInt(process.env.FRAME_CONCURRENCY || '2', 10) || 2);
+const RESUME_FRAMES = process.env.RESUME_FRAMES === '1';
 
 function assertFile(file) {
   if (!fs.existsSync(file)) throw new Error(`missing file: ${file}`);
@@ -371,15 +373,25 @@ async function main() {
   assertFile(music);
   const meta = await sharp(source).metadata();
   const uri = dataUri(source);
-  fs.rmSync(frameDir, { recursive: true, force: true });
+  if (!RESUME_FRAMES) fs.rmSync(frameDir, { recursive: true, force: true });
   fs.mkdirSync(frameDir, { recursive: true });
   const frameCount = Math.round(DUR * FPS);
-  for (let i = 0; i < frameCount; i += 1) {
-    const t = i / FPS;
-    const frame = path.join(frameDir, `frame_${String(i).padStart(5, '0')}.png`);
-    await sharp(Buffer.from(renderSvg(t, meta, uri))).png().toFile(frame);
-    if (i % 60 === 0) console.log(`frame ${i}/${frameCount}`);
+  let nextFrame = 0;
+  let completed = 0;
+  async function renderWorker() {
+    while (true) {
+      const i = nextFrame++;
+      if (i >= frameCount) return;
+      const t = i / FPS;
+      const frame = path.join(frameDir, `frame_${String(i).padStart(5, '0')}.png`);
+      if (!(RESUME_FRAMES && fs.existsSync(frame))) {
+        await sharp(Buffer.from(renderSvg(t, meta, uri))).png().toFile(frame);
+      }
+      completed += 1;
+      if (completed % 60 === 0 || completed === frameCount) console.log(`frame ${completed}/${frameCount}`);
+    }
   }
+  await Promise.all(Array.from({ length: FRAME_CONCURRENCY }, () => renderWorker()));
   run(ffmpeg, [
     '-y', '-framerate', String(FPS), '-i', path.join(frameDir, 'frame_%05d.png'),
     '-an', '-c:v', 'libx264', '-preset', previewMode ? 'veryfast' : 'medium', '-crf', previewMode ? '24' : '16',

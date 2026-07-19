@@ -10,7 +10,6 @@ const cwd = process.cwd();
 const ffmpeg = path.join(cwd, '.tools/media-bin/node_modules/@ffmpeg-installer/darwin-arm64/ffmpeg');
 const ffprobe = path.join(cwd, '.tools/media-bin/node_modules/@ffprobe-installer/darwin-arm64/ffprobe');
 const music = path.join(cwd, '04-正版授权音乐库', '未来科技宽广磅礴音乐15437.wav');
-const baseList = path.join(cwd, '06_预览输出', 'refined_v34_final_2560p60_parts', 'concat_list_v34_final_2560p60.txt');
 
 const W = 2560;
 const H = 1440;
@@ -32,10 +31,30 @@ const logPath = path.join(cwd, '03_脚本与结构', `Concetto 2.0_${TAG}_完整
 const latest = {
   opening: path.join(cwd, '开头', 'Concetto_2.0_开头登场视觉_v04_2点0震荡波_9s.mp4'),
   highlight: path.join(cwd, '06_预览输出', 'Concetto_2.0_升级亮点_分层独立呼吸_v05_2560p60.mp4'),
+  update: path.join(cwd, '06_预览输出', 'refined_v34_update_content_asset_parts', 'intro_update_contents_v34_from_update1.mp4'),
   workflow: path.join(cwd, '06_预览输出', 'Concetto_2.0_九大环节黑场浮现流光_按钮波纹_v02_2560p60.mp4'),
+  chapterSequence: path.join(cwd, '06_预览输出', 'Concetto_2.0_九环章节常驻进度_原生操作页_v01_2560p60.mp4'),
   end: path.join(cwd, '06_预览输出', 'Concetto_2.0_结尾字形蚀刻多层光_v02_2560p60.mp4'),
-  chapter: (no) => path.join(cwd, '06_预览输出', 'chapter_covers_clean_v01_parts', `chapter_${no}_clean_v01_2560p60.mp4`),
 };
+
+const operationDir = path.join(cwd, '06_预览输出', 'refined_v31_final_2560p60_parts', 'ops');
+const operationOutputs = [
+  'sec_01_operation_ai_x4_1440p60.mp4',
+  'sec_02_operation_ai_x4_1440p60.mp4',
+  'sec_03_operation_ai_x4_1440p60.mp4',
+  'sec_04_operation_ai_x4_1440p60.mp4',
+  'sec_05_operation_normal_ai_x4_1440p60.mp4',
+  'sec_05_operation_suite_ai_x4_1440p60.mp4',
+  'sec_06_operation_ai_x4_1440p60.mp4',
+  'sec_07_operation_ai_x4_1440p60.mp4',
+  'sec_08_operation_ai_x4_1440p60.mp4',
+  'sec_09_text_generation_with_title_1440p60.mp4',
+].map((name) => path.join(operationDir, name));
+
+const coverOutputs = Array.from({ length: 9 }, (_, index) => {
+  const no = String(index + 1).padStart(2, '0');
+  return path.join(cwd, '06_预览输出', 'chapter_covers_clean_v01_parts', `chapter_${no}_clean_v01_无内嵌进度层_2560p60.mp4`);
+});
 
 const generators = [
   {
@@ -51,10 +70,23 @@ const generators = [
     env: { RENDER_MODE: 'final' },
   },
   {
-    name: '九个章节封面与顶部进度 2560p60',
+    name: '原始高帧率操作录屏 4x 超分与原生新顶部 2560p60',
+    script: '.tools/process_highfps_final_ops_x4_1440p60.mjs',
+    outputs: operationOutputs,
+    env: { FPS: '60' },
+  },
+  {
+    name: '九个无内嵌进度的原生章节封面 2560p60',
     script: '.tools/render_concetto_chapter_covers_clean_v01.mjs',
-    outputs: Array.from({ length: 9 }, (_, i) => latest.chapter(String(i + 1).padStart(2, '0'))),
-    env: { RENDER_MODE: 'final', CHAPTERS: '01,02,03,04,05,06,07,08,09' },
+    outputs: coverOutputs,
+    env: { RENDER_MODE: 'final', PROGRESS_MODE: 'none', CHAPTERS: '01,02,03,04,05,06,07,08,09' },
+  },
+  {
+    name: '九环曲线直线形变与原生章节序列 2560p60',
+    script: '.tools/render_chapter_progress_persistent_final_v01.mjs',
+    outputs: [latest.chapterSequence],
+    inputs: [...operationOutputs, ...coverOutputs],
+    env: { RENDER_MODE: 'final', FORCE_SOURCE_RENDER: '0' },
   },
   {
     name: '字形蚀刻结尾 2560p60',
@@ -83,14 +115,6 @@ function capture(bin, args, label) {
 function quoteFile(file) { return file.replace(/'/g, "'\\''"); }
 function safeBase(value) { return value.replace(/[^\p{L}\p{N}._-]+/gu, '_'); }
 
-function readConcatList(file) {
-  return fs.readFileSync(file, 'utf8')
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => line.replace(/^file\s+'/, '').replace(/'$/, '').replace(/'\\''/g, "'"));
-}
-
 function probeDur(file) {
   const value = capture(ffprobe, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nk=1:nw=1', file], `probe duration ${path.basename(file)}`);
   const parsed = Number.parseFloat(value);
@@ -113,13 +137,17 @@ function fpsValue(rate) {
 
 function prepareLatestSegments() {
   for (const item of generators) {
+    const script = path.join(cwd, item.script);
+    assertFile(script);
     const missing = item.outputs.some((file) => !fs.existsSync(file));
-    if (!FORCE_SEGMENT_RENDER && !missing) {
+    const inputFiles = [script, ...(item.inputs || [])].filter((file) => fs.existsSync(file));
+    const newestInputMtime = Math.max(...inputFiles.map((file) => fs.statSync(file).mtimeMs));
+    const stale = !missing && item.outputs.some((file) => fs.statSync(file).mtimeMs < newestInputMtime);
+    if (!FORCE_SEGMENT_RENDER && !missing && !stale) {
       console.log(`✓ reuse ${item.name}`);
       continue;
     }
-    const script = path.join(cwd, item.script);
-    assertFile(script);
+    if (stale && !FORCE_SEGMENT_RENDER) console.log(`↻ rebuild stale ${item.name}`);
     run(process.execPath, [script], `render ${item.name}`, {
       cwd,
       env: { ...process.env, ...item.env },
@@ -128,28 +156,23 @@ function prepareLatestSegments() {
   }
 }
 
-function replaceWithLatest(baseParts) {
-  const audit = [];
-  const parts = baseParts.map((file) => {
-    const name = path.basename(file);
-    let replacement = null;
-    if (name === 'intro_opening_folder_direct_v16.mp4') replacement = latest.opening;
-    else if (/^intro_highlight_/.test(name)) replacement = latest.highlight;
-    else if (/^intro_workflow_overview_/.test(name)) replacement = latest.workflow;
-    else if (/^end_card_/.test(name)) replacement = latest.end;
-    else {
-      const chapter = name.match(/^chapter_(\d{2})_v05_card_style\.mp4$/);
-      if (chapter) replacement = latest.chapter(chapter[1]);
-    }
-    if (!replacement) return file;
-    audit.push({ from: file, to: replacement });
-    return replacement;
-  });
-
-  const expected = 13; // opening + highlight + workflow + 9 chapter covers + ending
-  if (audit.length !== expected) {
-    throw new Error(`latest segment replacement count mismatch: expected ${expected}, got ${audit.length}`);
-  }
+function buildProductionParts() {
+  const parts = [
+    latest.opening,
+    latest.highlight,
+    latest.update,
+    latest.workflow,
+    latest.chapterSequence,
+    latest.end,
+  ];
+  const audit = [
+    { from: '开头原始授权素材与脚本', to: latest.opening },
+    { from: '亮点静态底稿与分层脚本', to: latest.highlight },
+    { from: '更新内容1.png 与描边呼吸脚本', to: latest.update },
+    { from: '九环黑场静态底稿与流光脚本', to: latest.workflow },
+    { from: '原始高帧率录屏、成果素材与九环常驻进度脚本', to: latest.chapterSequence },
+    { from: '结尾文案与字形蚀刻脚本', to: latest.end },
+  ];
   return { parts, audit };
 }
 
@@ -195,8 +218,11 @@ function writeLog(parts, audit, stream) {
     `# Concetto 2.0 ${TAG} 完整正片生成说明`, '',
     '- 单一入口脚本：`.tools/assemble_concetto_v35_unified_final.mjs`；',
     '- 正片输出：2560×1440、CFR 60fps、H.264 CRF 12；',
-    '- 基于 v34 最终操作素材清单，操作演示、成果展示、交流会等顺序保持不变；',
-    '- 统一接入 2.0 震荡开头、黑场升级亮点、黑场九大环节总览、九个顶部进度章节封面和字形蚀刻结尾；',
+    '- 不读取旧版成片、旧预览视频或旧视频截图；全片入口只组合当前脚本生成的一手片段；',
+    '- 操作演示直接来自 `高帧率版手动保存素材` 原始录屏，经裁切、Real-ESRGAN 4×、原生背景与新顶部重绘；',
+    '- 九个章节封面直接读取原始操作录屏生成侧图，随后由统一脚本完成曲线⇄直线进度形变；',
+    '- 成果展示使用对应原始图片/工程素材生成的批准片段，章节顺序与交流会位置保持不变；',
+    '- 统一接入 2.0 震荡开头、黑场升级亮点、更新内容、黑场九大环节总览、九章常驻进度序列和字形蚀刻结尾；',
     '- 每个片段先独立重建 PTS/timebase 并标准化，再无损串接，避免混合帧率造成卡顿或时长塌缩；',
     '- 低清预览、临时帧和最终视频文件不进入轻量 Git 仓库。', '',
     `片段数：${parts.length}`,
@@ -207,12 +233,18 @@ function writeLog(parts, audit, stream) {
 }
 
 function main() {
-  [ffmpeg, ffprobe, music, baseList, latest.opening].forEach(assertFile);
-  const baseParts = readConcatList(baseList);
-  const { parts, audit } = replaceWithLatest(baseParts);
+  [ffmpeg, ffprobe, music, latest.opening].forEach(assertFile);
+  const { parts, audit } = buildProductionParts();
 
   if (VALIDATE_ONLY) {
-    console.log(JSON.stringify({ tag: TAG, size: `${W}x${H}`, fps: FPS, parts: parts.length, replacements: audit.length }, null, 2));
+    console.log(JSON.stringify({
+      tag: TAG,
+      size: `${W}x${H}`,
+      fps: FPS,
+      parts: parts.length,
+      nativeOperationInputs: operationOutputs.length,
+      oldEditOrScreenshotDependencies: 0,
+    }, null, 2));
     return;
   }
 
