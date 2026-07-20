@@ -25,6 +25,8 @@ const listPath = path.join(outDir, `concat_list_${TAG}.txt`);
 const normalizedList = path.join(outDir, `concat_list_${TAG}_normalized.txt`);
 const videoOnly = path.join(outDir, `video_concat_${TAG}.mp4`);
 const output = path.join(cwd, '06_预览输出', `Concetto_2.0_正片_${TAG}_2560p60.mp4`);
+const deliveryDir = path.join(cwd, '成片保存');
+const deliveryOutput = path.join(deliveryDir, `Concetto_2.0_完整正片_${TAG}_2560p60_20260720.mp4`);
 const preview = path.join(cwd, '06_预览输出', `Concetto_2.0_正片_${TAG}_全片预览.jpg`);
 const logPath = path.join(cwd, '03_脚本与结构', `Concetto 2.0_${TAG}_完整正片生成说明.md`);
 
@@ -37,7 +39,7 @@ const latest = {
   end: path.join(cwd, '06_预览输出', 'Concetto_2.0_结尾字形蚀刻多层光_v02_2560p60.mp4'),
 };
 
-const operationDir = path.join(cwd, '06_预览输出', 'refined_v31_final_2560p60_parts', 'ops');
+const operationDir = path.join(cwd, '06_预览输出', 'operation_pages_clean_header_v01');
 const operationOutputs = [
   'sec_01_operation_ai_x4_1440p60.mp4',
   'sec_02_operation_ai_x4_1440p60.mp4',
@@ -58,6 +60,12 @@ const coverOutputs = Array.from({ length: 9 }, (_, index) => {
 
 const generators = [
   {
+    name: '2.0 震荡开头与分层柔和退场 60fps',
+    script: '.tools/render_concetto_opening_v04_20_bolder_shockwave.mjs',
+    outputs: [latest.opening],
+    env: { FRAME_CONCURRENCY: '6' },
+  },
+  {
     name: '黑场升级亮点 2560p60',
     script: '.tools/render_concetto_highlights_black_reveal_v05.mjs',
     outputs: [latest.highlight],
@@ -70,10 +78,12 @@ const generators = [
     env: { RENDER_MODE: 'final' },
   },
   {
-    name: '原始高帧率操作录屏 4x 超分与原生新顶部 2560p60',
-    script: '.tools/process_highfps_final_ops_x4_1440p60.mjs',
+    name: '复用既有 4x 高清录屏并原生重绘新顶部 2560p60',
+    script: '.tools/rebuild_operation_pages_clean_header_v01.mjs',
     outputs: operationOutputs,
-    env: { FPS: '60' },
+    // Header-only revisions must never trigger another AI upscale. The script
+    // crops the clean UI body from the approved processed assets and rewraps it.
+    env: { RENDER_MODE: 'final', CHAPTERS: '01,02,03,04,05,06,07,08,09' },
   },
   {
     name: '九个无内嵌进度的原生章节封面 2560p60',
@@ -170,7 +180,7 @@ function buildProductionParts() {
     { from: '亮点静态底稿与分层脚本', to: latest.highlight },
     { from: '更新内容1.png 与描边呼吸脚本', to: latest.update },
     { from: '九环黑场静态底稿与流光脚本', to: latest.workflow },
-    { from: '原始高帧率录屏、成果素材与九环常驻进度脚本', to: latest.chapterSequence },
+    { from: '既有4×高清录屏主体、成果素材与九环常驻进度脚本', to: latest.chapterSequence },
     { from: '结尾文案与字形蚀刻脚本', to: latest.end },
   ];
   return { parts, audit };
@@ -187,7 +197,8 @@ function normalizeSegment(file, index, total) {
       reusable = Math.abs(sourceDuration - outputDuration) < .08
         && Number(stream.width) === W
         && Number(stream.height) === H
-        && Math.abs(fpsValue(stream.avg_frame_rate) - FPS) < .01;
+        && Math.abs(fpsValue(stream.avg_frame_rate) - FPS) < .01
+        && fs.statSync(normalized).mtimeMs >= fs.statSync(file).mtimeMs;
     } catch {
       reusable = false;
     }
@@ -219,7 +230,7 @@ function writeLog(parts, audit, stream) {
     '- 单一入口脚本：`.tools/assemble_concetto_v35_unified_final.mjs`；',
     '- 正片输出：2560×1440、CFR 60fps、H.264 CRF 12；',
     '- 不读取旧版成片、旧预览视频或旧视频截图；全片入口只组合当前脚本生成的一手片段；',
-    '- 操作演示直接来自 `高帧率版手动保存素材` 原始录屏，经裁切、Real-ESRGAN 4×、原生背景与新顶部重绘；',
+    '- 操作演示复用已完成 Real-ESRGAN 4× 处理的高清录屏主体；本轮只裁出 UI 区域并原生重绘背景与新顶部，不重复执行超分；',
     '- 九个章节封面直接读取原始操作录屏生成侧图，随后由统一脚本完成曲线⇄直线进度形变；',
     '- 成果展示使用对应原始图片/工程素材生成的批准片段，章节顺序与交流会位置保持不变；',
     '- 统一接入 2.0 震荡开头、黑场升级亮点、更新内容、黑场九大环节总览、九章常驻进度序列和字形蚀刻结尾；',
@@ -227,13 +238,14 @@ function writeLog(parts, audit, stream) {
     '- 低清预览、临时帧和最终视频文件不进入轻量 Git 仓库。', '',
     `片段数：${parts.length}`,
     `输出：\`${output}\``,
+    `交付副本：\`${deliveryOutput}\``,
     `视频流：${stream.width}×${stream.height} / ${stream.avg_frame_rate} / ${Number(stream.duration || 0).toFixed(3)}s`, '',
     '## 最新片段替换', '', '| 原片段 | 当前片段 |', '| --- | --- |', replacementRows, '',
   ].join('\n'));
 }
 
 function main() {
-  [ffmpeg, ffprobe, music, latest.opening].forEach(assertFile);
+  [ffmpeg, ffprobe, music].forEach(assertFile);
   const { parts, audit } = buildProductionParts();
 
   if (VALIDATE_ONLY) {
@@ -271,8 +283,11 @@ function main() {
   if (Number(stream.width) !== W || Number(stream.height) !== H || Math.abs(fpsValue(stream.avg_frame_rate) - FPS) > .01) {
     throw new Error(`final stream verification failed: ${JSON.stringify(stream)}`);
   }
+  fs.mkdirSync(deliveryDir, { recursive: true });
+  fs.copyFileSync(output, deliveryOutput);
   writeLog(parts, audit, stream);
   console.log(`DONE ${output}`);
+  console.log(`DELIVERED ${deliveryOutput}`);
 }
 
 main();

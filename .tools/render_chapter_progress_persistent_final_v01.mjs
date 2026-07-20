@@ -24,7 +24,9 @@ const H = previewMode ? 720 : 1440;
 const FPS = previewMode ? 30 : 60;
 const COVER_DUR = 3.6;
 const FRAME_CONCURRENCY = Math.max(1, Number.parseInt(process.env.FRAME_CONCURRENCY || (previewMode ? '4' : '2'), 10) || 2);
-const opDir = path.join(cwd, '06_预览输出', 'refined_v31_final_2560p60_parts', 'ops');
+// Reuse the already AI-upscaled recordings, but rebuild their surrounding
+// header/background natively so legacy labels can never flash through.
+const opDir = path.join(cwd, '06_预览输出', 'operation_pages_clean_header_v01');
 const coverDir = path.join(cwd, '06_预览输出', 'chapter_covers_clean_v01_parts');
 const generated = (...parts) => path.join(cwd, '06_预览输出', ...parts);
 
