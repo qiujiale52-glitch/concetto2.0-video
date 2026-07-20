@@ -59,7 +59,15 @@ function easeInOutCubic(value) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+function titleVisualUnits(value) {
+  return [...String(value)].reduce((sum, character) => sum + (/^[\x00-\x7F]$/.test(character) ? 0.58 : 1), 0);
+}
+
 function backgroundSvg(op) {
+  // Keep the feature description clear of long chapter titles.  The old fixed
+  // x=840 placement collided with “车库智能排布”; calculate the start from the
+  // actual title length while preserving the established header proportions.
+  const featureX = Math.round(Math.max(840, Math.min(1160, 584 + titleVisualUnits(op.title) * 48 + 48)));
   return `<?xml version="1.0" encoding="UTF-8"?>
   <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -77,7 +85,7 @@ function backgroundSvg(op) {
     <rect x="149" y="139" width="327" height="1.6" fill="#7668ff" opacity=".55"/>
     <text x="520" y="112" font-family="MiSans, PingFang SC, Arial" font-size="32" fill="#8f84dc" opacity=".82">${op.no.replace(/[AB]/g, '')}</text>
     <text x="584" y="115" font-family="MiSans, PingFang SC, Arial" font-size="48" font-weight="700" fill="#f3f0ff">${esc(op.title)}</text>
-    <text x="840" y="112" font-family="MiSans, PingFang SC, Arial" font-size="25" fill="#aaa2df" opacity=".92">${esc(op.feature)}</text>
+    <text x="${featureX}" y="112" font-family="MiSans, PingFang SC, Arial" font-size="25" fill="#aaa2df" opacity=".92">${esc(op.feature)}</text>
   </svg>`;
 }
 
@@ -138,11 +146,11 @@ for (const op of operations) {
   const dur = duration(source);
   const fadeOut = Math.max(0.1, dur - 0.25);
   run(ffmpeg, [
-    '-y', '-i', source, '-loop', '1', '-t', dur.toFixed(3), '-i', bg,
+    '-y', '-i', source, '-loop', '1', '-framerate', String(FPS), '-t', dur.toFixed(3), '-i', bg,
     '-filter_complex',
-    `[0:v]crop=${UI.w}:${UI.h}:${UI.x}:${UI.y},setsar=1[ui];` +
-    `[1:v]scale=${W}:${H},setsar=1[bg];` +
-    `[bg][ui]overlay=${UI.x}:${UI.y}:format=auto,fade=t=in:st=0:d=0.16,fade=t=out:st=${fadeOut.toFixed(3)}:d=0.25,fps=${FPS},format=yuv420p,setpts=PTS-STARTPTS[v]`,
+    `[0:v]crop=${UI.w}:${UI.h}:${UI.x}:${UI.y},setsar=1,fps=${FPS},settb=AVTB,setpts=PTS-STARTPTS[ui];` +
+    `[1:v]scale=${W}:${H},setsar=1,fps=${FPS},settb=AVTB,setpts=PTS-STARTPTS[bg];` +
+    `[bg][ui]overlay=${UI.x}:${UI.y}:format=auto:shortest=1:eof_action=pass,fade=t=in:st=0:d=0.16,fade=t=out:st=${fadeOut.toFixed(3)}:d=0.25,fps=${FPS},format=yuv420p,settb=AVTB,setpts=PTS-STARTPTS[v]`,
     '-map', '[v]', '-an', '-c:v', 'libx264', '-preset', preview ? 'veryfast' : 'slow', '-crf', preview ? '15' : '10',
     '-pix_fmt', 'yuv420p', '-r', String(FPS), '-video_track_timescale', '60000', '-movflags', '+faststart', out,
   ], `rebuild clean operation ${op.no}`);

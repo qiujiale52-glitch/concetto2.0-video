@@ -274,6 +274,17 @@ function renderOverlaySvg(time) {
     ? smooth(0.48, 1.62, segment.local)
     : 1;
   const pulse = 0.5 + 0.5 * Math.sin(time * 2.7);
+  // “活跃用户 / 交流会”是九大环节结束后的独立品牌板块，不继承第 09
+  // 环节进度。进度层在 PPT 生成片段结束前先柔和淡出，进入该板块时
+  // 已完全消失。
+  let progressOpacity = 1;
+  if (segment.chapter === 8 && segment.type === 'content') {
+    if (segment.contentIndex === 0) {
+      progressOpacity = 1 - smooth(Math.max(0, segment.duration - 0.62), Math.max(0.01, segment.duration - 0.08), segment.local);
+    } else if (segment.contentIndex >= 1) {
+      progressOpacity = 0;
+    }
+  }
 
   // 原封面式左→右光头。保留低亮呼吸尾迹，越靠近右端越宽、越亮；
   // 位移使用 quintic smootherstep，形成慢起步—中段加速—末端减速。
@@ -336,12 +347,14 @@ function renderOverlaySvg(time) {
       <filter id="lineGlow" x="-20%" y="-220%" width="140%" height="540%"><feGaussianBlur stdDeviation="3.5"/></filter>
       <filter id="headGlow" x="-55%" y="-260%" width="210%" height="620%"><feGaussianBlur stdDeviation="2.2"/><feDropShadow dx="0" dy="0" stdDeviation="4.6" flood-color="#b79cff" flood-opacity=".72"/></filter>
     </defs>
-    <path d="${d}" pathLength="1" fill="none" stroke="#302c55" stroke-width="4.6" stroke-dasharray="${firstCoverReveal.toFixed(4)} 1" opacity=".13" filter="url(#lineGlow)"/>
-    <path d="${d}" pathLength="1" fill="none" stroke="url(#pathGrad)" stroke-width="1.35" stroke-dasharray="${firstCoverReveal.toFixed(4)} 1" opacity=".92"/>
-    <path d="${d}" pathLength="1" fill="none" stroke="url(#flowGrad)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray=".002 .044" stroke-dashoffset="${(Number(flow) / 1000).toFixed(4)}" opacity="${(0.14 * firstCoverReveal).toFixed(3)}" filter="url(#lineGlow)"/>
-    <path d="${d}" pathLength="1" fill="none" stroke="url(#flowGrad)" stroke-width=".85" stroke-linecap="round" stroke-dasharray=".008 .057" stroke-dashoffset="${(Number(flow) / 1000).toFixed(4)}" opacity="${(0.29 * firstCoverReveal).toFixed(3)}"/>
-    ${sweepCore}
-    ${nodeMarkup}
+    <g opacity="${progressOpacity.toFixed(3)}">
+      <path d="${d}" pathLength="1" fill="none" stroke="#302c55" stroke-width="4.6" stroke-dasharray="${firstCoverReveal.toFixed(4)} 1" opacity=".13" filter="url(#lineGlow)"/>
+      <path d="${d}" pathLength="1" fill="none" stroke="url(#pathGrad)" stroke-width="1.35" stroke-dasharray="${firstCoverReveal.toFixed(4)} 1" opacity=".92"/>
+      <path d="${d}" pathLength="1" fill="none" stroke="url(#flowGrad)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray=".002 .044" stroke-dashoffset="${(Number(flow) / 1000).toFixed(4)}" opacity="${(0.14 * firstCoverReveal).toFixed(3)}" filter="url(#lineGlow)"/>
+      <path d="${d}" pathLength="1" fill="none" stroke="url(#flowGrad)" stroke-width=".85" stroke-linecap="round" stroke-dasharray=".008 .057" stroke-dashoffset="${(Number(flow) / 1000).toFixed(4)}" opacity="${(0.29 * firstCoverReveal).toFixed(3)}"/>
+      ${sweepCore}
+      ${nodeMarkup}
+    </g>
   </svg>`;
 }
 
@@ -384,11 +397,11 @@ function ensureOriginalCoverBases() {
 function ensureNativeOperationPages() {
   const required = chapters.flatMap((chapter) => chapter.content.filter((file) => file.startsWith(opDir)));
   if (!forceSourceRender && required.every((file) => fs.existsSync(file))) return;
-  const generator = path.join(cwd, '.tools', 'process_highfps_final_ops_x4_1440p60.mjs');
+  const generator = path.join(cwd, '.tools', 'rebuild_operation_pages_clean_header_v01.mjs');
   const result = spawnSync(process.execPath, [generator], {
     cwd,
     stdio: 'inherit',
-    env: { ...process.env, FPS: '60' },
+    env: { ...process.env, RENDER_MODE: 'final' },
   });
   if (result.status !== 0) throw new Error(`native operation page render failed with status ${result.status}`);
   required.forEach((file) => {
